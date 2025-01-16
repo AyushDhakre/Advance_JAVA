@@ -1,0 +1,43 @@
+package jdbcproject;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.SQLRecoverableException;
+
+public class Jconncetion {
+    public static void main(String[] args) {
+        String url = "jdbc:oracle:thin:@localhost:1521:xe"; // Replace with your DB connection string
+        String username = "c##hr"; // Replace with your DB username
+        String password = "hr";   // Replace with your DB password
+
+        Connection connection = null;
+        int retryCount = 3;
+
+        for (int attempt = 1; attempt <= retryCount; attempt++) {
+            try {
+                // Load Oracle JDBC Driver
+                Class.forName("oracle.jdbc.driver.OracleDriver");
+
+                // Establish Connection
+                connection = DriverManager.getConnection(url, username, password);
+                System.out.println("Connection established successfully on attempt " + attempt);
+
+                // Exit loop after successful connection
+                break;
+
+            } catch (SQLRecoverableException e) {
+                System.out.println("Recoverable SQL error occurred: " + e.getMessage());
+                System.out.println("Retrying connection... (" + attempt + "/" + retryCount + ")");
+
+                if (attempt == retryCount) {
+                    System.out.println("Failed to establish connection after multiple attempts.");
+                    e.printStackTrace();
+                }
+
+            } catch (ClassNotFoundException e) {
+                System.out.println("JDBC Driver not found.");
+                e.printStackTrace();
+                break; // No point in retrying if the driver is missing
+            } catch (SQLException e) {
+                System.out.println("SQL error occurred: " + e.getMessage
