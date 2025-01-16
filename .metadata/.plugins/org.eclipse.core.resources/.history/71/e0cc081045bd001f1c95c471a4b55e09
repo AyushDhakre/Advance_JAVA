@@ -1,0 +1,54 @@
+package Statement_class;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class prob_2 {
+
+    public static void main(String[] args) {
+        try {
+            Class.forName("oracle.jdbc.driver.OracleDriver");
+
+            // Database connection details
+            String url = "jdbc:oracle:thin:@LAPTOP-COHNMS1F:1521:XE";
+            String username = "hr";
+            String password = "hr";
+
+            // Establish the connection
+            Connection conn = DriverManager.getConnection(url, username, password);
+
+            if (conn != null) {
+                System.out.println("Connection is established successfully.");
+            } else {
+                System.out.println("Failed to establish connection.");
+                return;
+            }
+
+            // Create a Statement object
+            Statement st = conn.createStatement();
+
+            // Insert two records into the products table
+            String insertQuery1 = "INSERT INTO products (product_code, product_name, price) VALUES ('a111', 'Tablet', 255)";
+            String insertQuery2 = "INSERT INTO products (product_code, product_name, price) VALUES ('a221', 'Tab', 265)";
+
+            // Execute insert queries
+            st.executeUpdate(insertQuery1);
+            st.executeUpdate(insertQuery2);
+
+            System.out.println("Records inserted successfully.");
+
+            // Close the resources
+            st.close();
+            conn.close();
+            System.out.println("Connection closed.");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Oracle JDBC Driver not found. Add ojdbc8.jar to your classpath.");
+            e.printStackTrace();
+        } catch (SQLException e) {
+            System.out.println("SQL Exception occurred. Check your SQL query or connection details.");
+            e.printStackTrace();
+        }
+    }
+}
